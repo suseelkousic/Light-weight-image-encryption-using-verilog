@@ -1,0 +1,40 @@
+module encryption(input reg[23:0]matrix[][],input int r,c,output reg[23:0]outmatrix[][]);
+function automatic reg [23:0]bles(input reg [23:0]data);
+    for(int i=0,j=23;i<=11 && j>=12;i=i+1,j=j-1)
+    begin
+        int tmp=data[i];
+        data[i]=data[j];
+        data[j]=tmp;
+    end
+    data=~data;
+    data[11:0]=data[23:12]^data[11:0];
+    return data;
+endfunction
+longint i,j;
+reg[23:0] dp[16777220];
+initial begin
+    $display("entered encryption");
+    outmatrix=new[r];
+    foreach(outmatrix[k])
+        outmatrix[k]=new[c];
+    $display("obatianed the output mat size %d %d",$size(outmatrix),$size(outmatrix[1]));
+    for(i=0;i<=16777216;i=i+1)
+    begin
+        dp[i]=bles(i);
+    end
+    $display("dp done");
+    for(i=0;i<r;i++)
+    begin
+        for(j=0;j<c;j++)
+        begin
+            outmatrix[i][j]=dp[matrix[i][j]];
+            $display("%d %d %d",dp[matrix[i][j]][23:16],dp[matrix[i][j]][15:8],dp[matrix[i][j]][7:0]);
+        end
+    end
+    $display("matrix updated");
+    $display("dp of 1,2,3,4 are %b, %b, %b, %b",dp[1],dp[2],dp[3],dp[4]);
+    
+            
+end
+
+endmodule

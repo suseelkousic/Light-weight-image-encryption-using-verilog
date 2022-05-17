@@ -1,0 +1,47 @@
+module main();
+reg [23:0]matrix[][];int r,c;
+string samplenumber="0";
+filereading f (.samplenumber(samplenumber),.datamat(matrix),.r(r),.c(c));                   ////modes- decrypted,encrypted
+reg [23:0]encryptedmatrix[][],decryptedmatrix[][];
+encryption e(.matrix(matrix),.outmatrix(encryptedmatrix),.r(r),.c(c));
+filewriting we (.samplenumber(samplenumber),.matrix(encryptedmatrix),.mode("encrypted"),.r(r),.c(c));
+decryption d (.matrix(encryptedmatrix),.outmatrix(decryptedmatrix),.r(r),.c(c));
+filewriting wd (.samplenumber(samplenumber),.matrix(decryptedmatrix),.mode("decrypted"),.r(r),.c(c));
+helper h(matrix,encryptedmatrix,decryptedmatrix,r,c);
+endmodule
+
+module helper(input reg[23:0]matrix[][],input reg[23:0]encryptedmatrix[][],input reg[23:0] decryptedmatrix[][],input int r,c);
+
+initial begin
+    $display("ORGINAL");
+    for(longint i=0;i<r;i=i+1)
+    begin
+        for(longint j=0;j<c;j=j+1)
+        begin
+            $write("%d ",matrix[i][j][23:16]);
+            $write("%d ",matrix[i][j][15:8]);
+            $write("%d\n",matrix[i][j][7:0]);
+        end
+     end
+     $display("ENCRYPTED");
+     for(int i=0;i<r;i=i+1)
+    begin
+        for(int j=0;j<c;j=j+1)
+        begin
+            $write("%d ",encryptedmatrix[i][j][23:16]);
+            $write("%d ",encryptedmatrix[i][j][15:8]);
+            $write("%d\n",encryptedmatrix[i][j][7:0]);
+        end
+     end
+     $display("DECRYPTED");
+     for(int i=0;i<r;i=i+1)
+     begin
+        for(int j=0;j<c;j=j+1)
+        begin
+            $write("%d ",decryptedmatrix[i][j][23:16]);
+            $write("%d ",decryptedmatrix[i][j][15:8]);
+            $write("%d\n",decryptedmatrix[i][j][7:0]);
+        end
+     end
+end 
+endmodule
